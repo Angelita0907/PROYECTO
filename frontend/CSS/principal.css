@@ -8,14 +8,14 @@ body, html {
     background-size: cover;
 }
 
-.container {
+.contenedor {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
 /* Encabezado */
-header {
+.encabezado {
     background-color: #99cee6;
     display: flex;
     align-items: center;
@@ -25,7 +25,7 @@ header {
     position: relative;
 }
 
-.header-left {
+.logo-izquierda {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -35,13 +35,7 @@ header {
     height: 160px;
 }
 
-.ies-name {
-    font-size: 14px;
-    font-weight: 400;
-    color: #000;
-}
-
-.titulo {
+.titulo-principal {
     font-size: 32px;
     font-weight: 700;
     color: #000;
@@ -52,12 +46,12 @@ header {
     margin: 0;
 }
 
-.nav-buttons {
+.botones-navegacion {
     display: flex;
     gap: 10px;
 }
 
-.nav {
+.navegacion {
     background-color: white;
     border: 2px solid #0077b6;
     color: #000;
@@ -67,25 +61,24 @@ header {
     cursor: pointer;
 }
 
-/* Botones */
-main {
+/* Contenido Principal */
+.contenido-principal {
     display: flex;
     justify-content: center;
     margin-top: 100px;
 }
 
-.button-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 350px);
-    grid-auto-rows: 150px;
-    gap: 100px 130px;
+.fila-botones {
+    display: flex;
     justify-content: center;
+    gap: 120px;
+    margin-top: 150px;
 }
 
-.section-button {
-    width: 350px;
+.boton-seccion {
+    width: 250px;
     height: 150px;
-    font-size: 32px;
+    font-size: 24px;
     font-weight: bold;
     background-color: #45b5c4;
     color: white;
@@ -95,6 +88,6 @@ main {
     transition: background 0.3s;
 }
 
-.section-button:hover {
+.boton-seccion:hover {
     background-color: #1693a5;
 }
