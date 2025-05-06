@@ -1,6 +1,6 @@
 package models;
 
-public class prueba {
+public class Prueba {
 	
 	private static int contador;
 	private int id;
@@ -11,7 +11,7 @@ public class prueba {
 	private String lugar;
 	private String descripcion;
 	
-	public prueba(int id, String nombre_prueba, Tipo tipo, String unidad_medida, Modalidad modalidad, String lugar,
+	public Prueba(int id, String nombre_prueba, Tipo tipo, String unidad_medida, Modalidad modalidad, String lugar,
 			String descripcion) {
 		super();
 		this.id = id;
@@ -28,7 +28,7 @@ public class prueba {
 	}
 
 	public static void setContador(int contador) {
-		prueba.contador = contador;
+		Prueba.contador = contador;
 	}
 
 	public int getId() {
@@ -89,12 +89,4 @@ public class prueba {
 	
 	
 
-}
-
-enum Tipo{
-	RESISTENCIA, FUERZA, VELOCIDAD, FLEXIBILIDAD, COORDINACION, EQUILIBRIO
-}
-
-enum Modalidad {
-	INDIVIDUAL, GRUPO
 }

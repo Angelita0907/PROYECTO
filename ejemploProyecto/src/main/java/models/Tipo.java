@@ -1,0 +1,5 @@
+package models;
+
+public enum Tipo {
+		RESISTENCIA, FUERZA, VELOCIDAD, FLEXIBILIDAD, COORDINACION, EQUILIBRIO
+}
