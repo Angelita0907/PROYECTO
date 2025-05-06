@@ -17,19 +17,12 @@ public class JdbcDaoPrueba extends JdbcDao{
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void insertaPrueba(Prueba prueba) {
+	public void insertaPrueba() {
 	    String query = "INSERT INTO Pruebas (nombre_prueba, tipo, unidad_medida, modalidad, lugar, descripcion) " +
 	                   "VALUES ('prueba', 'fuerza', 'distancia', 'individual', 'patio', 'prueba')";
 	    
 	    try (Connection conn = this.getConnection();
 	         PreparedStatement pstmt = conn.prepareStatement(query)) {
-	        
-	        pstmt.setString(1, prueba.getNombre_prueba());
-	        pstmt.setString(2, prueba.getTipo().toString().toLowerCase());
-	        pstmt.setString(3, prueba.getUnidad_medida());
-	        pstmt.setString(4, prueba.getModalidad().toString().toLowerCase());
-	        pstmt.setString(5, prueba.getLugar() != null ? prueba.getLugar() : "");
-	        pstmt.setString(6, prueba.getDescripcion() != null ? prueba.getDescripcion() : "");
 	        
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
@@ -37,7 +30,7 @@ public class JdbcDaoPrueba extends JdbcDao{
 	    }
 	}
 	
-	public void eliminaPrueba(Prueba e1) {
+	/*public void eliminaPrueba(Prueba e1) {
 		String query = "delete from prueba where id_prueba = 20";
 		Connection conn = null;
 		Statement stmt = null;
@@ -51,7 +44,7 @@ public class JdbcDaoPrueba extends JdbcDao{
 			e.printStackTrace();
 		
 		}
-	}
+	}*/
 	
 	public List<String> consultaPrueba() {
 		String query = "select nombre_prueba from pruebas";

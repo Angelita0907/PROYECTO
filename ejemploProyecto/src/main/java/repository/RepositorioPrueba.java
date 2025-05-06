@@ -6,7 +6,7 @@ import models.Prueba;
 public class RepositorioPrueba { 
 	public void altaEquipo(Prueba e) throws Exception {
 		   JdbcDaoPrueba p = new JdbcDaoPrueba();
-		   p.insertaPrueba(e);
+		   p.insertaPrueba();
 	}
 	/*
 	public void eliminaEquipo(Prueba e) throws Exception {
