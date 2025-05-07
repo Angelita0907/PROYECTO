@@ -47,7 +47,7 @@ public class JdbcDaoPrueba extends JdbcDao{
 	}*/
 	
 	public List<String> consultaPrueba() {
-		String query = "select nombre_prueba from pruebas";
+		String query = "select * from pruebas";
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;

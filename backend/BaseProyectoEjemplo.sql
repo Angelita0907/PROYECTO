@@ -15,7 +15,7 @@ CREATE TABLE Pruebas (
     CONSTRAINT chk_modalidad CHECK (modalidad IN ('individual', 'grupo', 'parejas'))
 );
 
--- Inserción de pruebas infantiles
+-- Inserción de pruebas 
 INSERT INTO Pruebas (nombre_prueba, tipo, unidad_medida, modalidad, lugar, descripcion)
 VALUES
 ('Carrera de sacos', 'velocidad', 'segundos', 'individual', 'Patio escolar', 'Carrera saltando dentro de un saco de 10 metros'),
