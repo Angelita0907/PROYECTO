@@ -12,7 +12,7 @@ CREATE TABLE Pruebas (
     descripcion TEXT,
     
     CONSTRAINT chk_tipo CHECK (tipo IN ('resistencia', 'fuerza', 'velocidad', 'flexibilidad', 'coordinacion', 'equilibrio')),
-    CONSTRAINT chk_modalidad CHECK (modalidad IN ('individual', 'grupo', 'parejas'))
+    CONSTRAINT chk_modalidad CHECK (modalidad IN ('individual', 'grupo'))
 );
 
 -- Inserción de pruebas 
