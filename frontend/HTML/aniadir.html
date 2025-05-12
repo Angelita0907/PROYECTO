@@ -6,7 +6,6 @@
     <title>Añadir Prueba - Competición Deportiva</title>
     <link rel="stylesheet" href="../CSS/principal.css">
     <link rel="stylesheet" href="../CSS/aniadir.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -15,54 +14,62 @@
         </a>
         <h1 id="titulo">COMPETICIÓN DEPORTIVA</h1>
         <div id="botones">
-            <a href="./principal.html"><button>Inicio</button></a>
-            <button onclick="window.history.back()">Atrás</button>        
+            <a href="./principal.html"><button type="button">Inicio</button></a>
+            <button type="button" onclick="window.history.back()">Atrás</button>        
         </div>
     </header>
 
     <div id="formulario-anadir">
         <h1>Añadir Prueba</h1>
         
-        <div class="campos-formulario">
-            <div class="campo">
-                <label for="nombre">Nombre de prueba</label>
-                <input type="text" id="nombre" required>
+        <form id="form-anadir-prueba" action="../servlets/ProcesarPrueba" method="POST">
+            <div class="campos-formulario">
+                <div class="campo">
+                    <label for="nombre">Nombre de prueba*</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                
+                <div class="campo">
+                    <label for="tipo">Tipo*</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="resistencia">Resistencia</option>
+                        <option value="fuerza">Fuerza</option>
+                        <option value="velocidad">Velocidad</option>
+                        <option value="flexibilidad">Flexibilidad</option>
+                    </select>
+                </div>
+                
+                <div class="campo">
+                    <label for="unidad">Unidad de medida*</label>
+                    <input type="text" id="unidad" name="unidad" required>
+                </div>
+                
+                <div class="campo">
+                    <label for="modalidad">Modalidad*</label>
+                    <select id="modalidad" name="modalidad" required>
+                        <option value="">Seleccione modalidad</option>
+                        <option value="grupo">Grupo</option>
+                        <option value="individual">Individual</option>
+                    </select>
+                </div>
+                
+                <div class="campo">
+                    <label for="lugar">Lugar*</label>
+                    <input type="text" id="lugar" name="lugar" required>
+                </div>
+                
+                <div class="campo">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+                </div>
             </div>
             
-            <div class="campo">
-                <label for="tipo">Tipo</label>
-                <select id="tipo" required>
-                    <option value="">Seleccione un tipo</option>
-                    <option value="resistencia">Resistencia</option>
-                    <option value="fuerza">Fuerza</option>
-                    <option value="velocidad">Velocidad</option>
-                    <option value="flexibilidad">Flexibilidad</option>
-                </select>
+            <div class="boton-central">
+                <button type="submit" class="boton-accion">Añadir Prueba</button>
+                <button type="reset" class="boton-accion secundario">Limpiar</button>
             </div>
-            
-            <div class="campo">
-                <label for="unidad">Unidad de medida</label>
-                <input type="text" id="unidad" required>
-            </div>
-            
-            <div class="campo">
-                <label for="modalidad">Modalidad</label>
-                <select id="modalidad" required>
-                    <option value="">Seleccione modalidad</option>
-                    <option value="grupo">Grupo</option>
-                    <option value="individual">Individual</option>
-                </select>
-            </div>
-            
-            <div class="campo">
-                <label for="lugar">Lugar</label>
-                <input type="text" id="lugar" required>
-            </div>
-        </div>
-        
-        <div class="boton-central">
-            <button type="submit" class="boton-accion">Añadir Prueba</button>
-        </div>
+        </form>
     </div>
 </body>
 </html>
