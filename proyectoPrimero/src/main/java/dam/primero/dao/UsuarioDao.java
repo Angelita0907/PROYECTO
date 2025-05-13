@@ -50,11 +50,11 @@ public class UsuarioDao extends JdbcDao {
 		try {
 			conn = this.getConnection(); // Método para obtener la conexión
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("select nombre_prueba from pruebas;");
+			rs = stmt.executeQuery("select usuario from usuarios;");
 
 			while (rs.next()) {
 				Usuario u = new Usuario();
-				u.setNombreUsuario(rs.getString("nombre_prueba"));
+				u.setNombreUsuario(rs.getString("usuario"));
 				usuarios.add(u);
 			}
 		} catch (SQLException e) {
@@ -80,7 +80,7 @@ public class UsuarioDao extends JdbcDao {
 
 		try {
 			conn = this.getConnection(); // Método para obtener la conexión
-			String query = "SELECT * FROM pruebas WHERE nombre_prueba = ?";
+			String query = "SELECT * FROM usuarios WHERE usuario = ?";
 			stmt = conn.prepareStatement(query);			   
 			stmt.setString(1, nombre);
 			rs = stmt.executeQuery();
