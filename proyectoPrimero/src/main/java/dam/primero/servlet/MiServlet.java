@@ -62,6 +62,18 @@ public class MiServlet extends HttpServlet {
 		    System.out.println("Servlet invocado. accion: " + accion);
 
 		    switch (accion) {
+		    
+		    case "principal":  // página principal de competicion_deportiva :)
+	            templateEngine.process("principal", context, response.getWriter());
+	            break;
+		    
+		    case "aniadir":
+		        // Cargar tipos y modalidades para los selects
+		        context.setVariable("tipos", Arrays.asList("resistencia", "fuerza", "velocidad", "flexibilidad"));
+		        context.setVariable("modalidades", Arrays.asList("grupo", "individual"));
+		        templateEngine.process("aniadir", context, response.getWriter());
+		        break;
+	            
 			case "listarUsuarios":
 				List<Usuario> usuarios = this.getListaUsuarios(request, response, context);
 				// Guardamos los usuarios para que lo tenga el frontend

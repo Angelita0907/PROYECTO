@@ -2,7 +2,7 @@
 body {
     margin: 0;
     font-family: Arial;
-    background: url('../IMG/fondo1.png') no-repeat center center fixed;
+    background: url('../img/fondo1.png') no-repeat center center fixed;
     background-size: cover;
     min-height: 100vh;
     display: flex;
