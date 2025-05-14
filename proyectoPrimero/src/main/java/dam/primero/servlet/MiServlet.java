@@ -50,9 +50,9 @@ public class MiServlet extends HttpServlet {
 
 		String pathInfo = request.getPathInfo(); // Ejemplo: /listarUsuarios o null
 		
-		if (pathInfo == null || pathInfo.trim().isEmpty() || pathInfo.trim().equalsIgnoreCase("/login")) {
+		if (pathInfo == null || pathInfo.trim().isEmpty() || pathInfo.trim().equalsIgnoreCase("/principal")) {
 			// Redirigir a la página de login
-			templateEngine.process("login", context, response.getWriter());
+			templateEngine.process("principal", context, response.getWriter());
 		} else {
 			// Dividimos por segmentos
 		    String[] partes = pathInfo.substring(1).split("/");
@@ -63,9 +63,11 @@ public class MiServlet extends HttpServlet {
 
 		    switch (accion) {
 		    
-		    case "principal":  // página principal de competicion_deportiva :)
-	            templateEngine.process("principal", context, response.getWriter());
-	            break;
+		    case "pruebas":
+                // Cargar datos necesarios para pruebas.html
+                context.setVariable("pruebas", parametro1);
+                templateEngine.process("pruebas", context, response.getWriter());
+                break;
 		    
 		    case "aniadir":
 		        // Cargar tipos y modalidades para los selects

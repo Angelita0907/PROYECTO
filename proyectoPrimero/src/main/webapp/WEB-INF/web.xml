@@ -13,8 +13,6 @@
     <servlet-mapping>
         <servlet-name>MiServlet</servlet-name>
         <url-pattern>/*</url-pattern>
-        <url-pattern>/css/*</url-pattern>
-    	<url-pattern>/img/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
