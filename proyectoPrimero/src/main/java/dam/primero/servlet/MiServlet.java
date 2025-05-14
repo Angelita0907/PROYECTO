@@ -65,16 +65,10 @@ public class MiServlet extends HttpServlet {
 		    
 		    case "pruebas":
                 // Cargar datos necesarios para pruebas.html
+		    	//List<Prueba> pruebas = daoPrueba.consultaPruebas();
                 context.setVariable("pruebas", parametro1);
                 templateEngine.process("pruebas", context, response.getWriter());
                 break;
-		    
-		    case "aniadir":
-		        // Cargar tipos y modalidades para los selects
-		        context.setVariable("tipos", Arrays.asList("resistencia", "fuerza", "velocidad", "flexibilidad"));
-		        context.setVariable("modalidades", Arrays.asList("grupo", "individual"));
-		        templateEngine.process("aniadir", context, response.getWriter());
-		        break;
 	            
 			case "listarUsuarios":
 				List<Usuario> usuarios = this.getListaUsuarios(request, response, context);
@@ -157,6 +151,14 @@ public class MiServlet extends HttpServlet {
 		WebContext context = new WebContext(webExchange, request.getLocale());
 
 		switch (pathInfo) {
+		
+		case "aniadir":
+	        // Cargar tipos y modalidades para los selects
+	        context.setVariable("tipos", Arrays.asList("resistencia", "fuerza", "velocidad", "flexibilidad"));
+	        context.setVariable("modalidades", Arrays.asList("grupo", "individual"));
+	        templateEngine.process("aniadir", context, response.getWriter());
+	        break;
+		
 		case "/validaUsuario":
 			// Lógica para listar usuarios
 			boolean correcto = validaUsuarioYClave(request, response, context);
