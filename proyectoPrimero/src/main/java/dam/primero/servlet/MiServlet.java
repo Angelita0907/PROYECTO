@@ -10,18 +10,23 @@ import org.thymeleaf.web.servlet.JavaxServletWebApplication;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+import javax.swing.plaf.multi.MultiPopupMenuUI;
+
 import java.io.IOException;
 import java.util.*;
 
 import dam.primero.dao.JdbcDaoPrueba;
 import dam.primero.dao.UsuarioDao;
+import dam.primero.modelos.Modalidad;
 import dam.primero.modelos.Prueba;
+import dam.primero.modelos.Tipo;
 import dam.primero.modelos.Usuario;
 
 public class MiServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2051990309999713971L;
 	private TemplateEngine templateEngine;
+	private JdbcDaoPrueba prueba;
 
 	@Override
 	public void init() throws ServletException {
@@ -74,16 +79,42 @@ public class MiServlet extends HttpServlet {
                 templateEngine.process("pruebas", context, response.getWriter());
                 break;
 		    case "aniadir":
-		    	 // Cargar tipos y modalidades
-		        List<String> tipos = this.getTiposPruebas(request, response, context);
+		        // Asignar listas de enums como texto para el formulario
+		        List<String> tipos = Arrays.asList("RESISTENCIA", "FUERZA", "VELOCIDAD", "FLEXIBILIDAD");
 		        context.setVariable("tipos", tipos);
 
-		        List<String> modalidades = this.getListaModalidades(request, response, context);
+		        List<String> modalidades = Arrays.asList("GRUPO", "INDIVIDUAL");
 		        context.setVariable("modalidades", modalidades);
 
-		        // Renderizamos la vista
+		        // Renderiza el formulario
 		        templateEngine.process("aniadir", context, response.getWriter());
-                break;
+		        break;
+                
+		    case "busqueda":
+		        // Obtener lista de nombres de pruebas
+		        List<String> pruebasBusqueda = this.getListaPruebas(request, response, context);
+		        context.setVariable("pruebas", pruebasBusqueda);
+		        templateEngine.process("busqueda", context, response.getWriter());
+		        break;
+                
+		    case "modificar":
+		        String nombrePrueba = request.getParameter("prueba"); // se llama "prueba" en el select
+		        Prueba prueba = obtenerPruebaPorId(nombrePrueba);
+		        
+		        if (prueba != null) {
+		            context.setVariable("prueba", prueba);
+
+		            // Listas de enums para los selects
+		            List<String> tipos2 = Arrays.asList("RESISTENCIA", "FUERZA", "VELOCIDAD", "FLEXIBILIDAD");
+		            List<String> modalidades2 = Arrays.asList("GRUPO", "INDIVIDUAL");
+		            context.setVariable("tipos", tipos2);
+		            context.setVariable("modalidades", modalidades2);
+
+		            templateEngine.process("modificar", context, response.getWriter());
+		        } else {
+		            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Prueba no encontrada");
+		        }
+		        break;
 	            
 			case "listarUsuarios":
 				List<Usuario> usuarios = this.getListaUsuarios(request, response, context);
@@ -168,6 +199,28 @@ public class MiServlet extends HttpServlet {
 	    return modalidades;
 	}
 
+	private List<String> getListaPruebas(HttpServletRequest request, HttpServletResponse response, WebContext context)
+            throws ServletException, IOException {
+        List<String> pruebas = new ArrayList<>();
+        try {
+            JdbcDaoPrueba daoPrueba = new JdbcDaoPrueba();
+            pruebas = daoPrueba.consultaPruebas();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pruebas;
+    }
+
+    private Prueba obtenerPruebaPorId(String nombre) {
+        Prueba prueba = null;
+        try {
+            JdbcDaoPrueba daoPrueba = new JdbcDaoPrueba();
+            prueba = daoPrueba.getPruebaByNombre(nombre);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return prueba;
+    }
 	
 	private Usuario getDetalleUsuario(String nombre)
 	{
@@ -185,24 +238,75 @@ public class MiServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		
-		String path = request.getServletPath();
-		String pathInfo = request.getPathInfo(); // Ejemplo: /listarUsuarios o null
-		System.out.println(pathInfo);
+
+		String servletPath = request.getServletPath();// Ejemplo: /listarUsuarios o null
+		System.out.println(servletPath);
 		ServletContext servletContext = getServletContext();
 		JavaxServletWebApplication application = JavaxServletWebApplication.buildApplication(servletContext);
 		IServletWebExchange webExchange = application.buildExchange(request, response);
 		WebContext context = new WebContext(webExchange, request.getLocale());
 
-		switch (pathInfo) {
+		switch (servletPath) {
 		
 		case "/altaPrueba":
 	        // Cargar tipos y modalidades para los selects
-	        context.setVariable("tipos", Arrays.asList("resistencia", "fuerza", "velocidad", "flexibilidad"));
-	        context.setVariable("modalidades", Arrays.asList("grupo", "individual"));
+	     /*   context.setVariable("tipos", Arrays.asList("resistencia", "fuerza", "velocidad", "flexibilidad"));
+	        context.setVariable("modalidades", Arrays.asList("grupo", "individual"));*/
 	        templateEngine.process("aniadir", context, response.getWriter());
+	        
+	        try {
+	        	JdbcDaoPrueba dao = new JdbcDaoPrueba();
+	        	
+	    	    String nombre = request.getParameter("nombre");
+			    String tipo = request.getParameter("tipo");
+			    String unidad = request.getParameter("unidad");
+			    String modalidad = request.getParameter("modalidad");
+			    String lugar = request.getParameter("lugar");
+			    String descripcion = request.getParameter("descripcion");
+			   
+			    Tipo tipoEnum = Tipo.valueOf(tipo);
+			    Modalidad modalidadEnum = Modalidad.valueOf(modalidad);
+			    
+			    Prueba prueba = new Prueba(nombre,  tipoEnum, unidad,  modalidadEnum,  lugar,descripcion);
+				dao.insertaPrueba(prueba);
+				
+				response.sendRedirect("/aniadir");
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
 	        break;
 		
+		case "/modificar":
+		    String nombre = request.getParameter("nombre");
+		    String tipo = request.getParameter("tipo");
+		    String unidad = request.getParameter("unidad");
+		    String modalidad = request.getParameter("modalidad");
+		    String lugar = request.getParameter("lugar");
+		    String descripcion = request.getParameter("descripcion");
+
+		    Prueba pruebaModificada = new Prueba(
+		        nombre,
+		        Tipo.valueOf(tipo.toUpperCase()),
+		        unidad,
+		        Modalidad.valueOf(modalidad.toUpperCase()),
+		        lugar,
+		        descripcion
+		    );
+
+		    try {
+		        JdbcDaoPrueba dao = new JdbcDaoPrueba();
+		        dao.actualizaPrueba(pruebaModificada);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    response.sendRedirect("busqueda");
+		    break;
+
+	        
 		case "/validaUsuario":
 			// Lógica para listar usuarios
 			boolean correcto = validaUsuarioYClave(request, response, context);
@@ -217,7 +321,7 @@ public class MiServlet extends HttpServlet {
 			break;
 		default:
 			// Ruta no reconocida
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Ruta no válida: " + path);
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Ruta no válida: " + servletPath);
 		}
 	}
 }

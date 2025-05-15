@@ -16,6 +16,8 @@
         <url-pattern>/pruebas</url-pattern>
         <url-pattern>/aniadir</url-pattern>
         <url-pattern>/altaPrueba</url-pattern>
+        <url-pattern>/busqueda</url-pattern>
+        <url-pattern>/modificar</url-pattern>
     </servlet-mapping>
 
 </web-app>

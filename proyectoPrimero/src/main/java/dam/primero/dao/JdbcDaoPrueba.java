@@ -66,32 +66,27 @@ public class JdbcDaoPrueba extends JdbcDao {
     }
 
     // Método para obtener todas las pruebas
-    public List<Prueba> consultaPruebas() {
-        String query = "SELECT * FROM pruebas";
-        List<Prueba> pruebas = new ArrayList<>();
+    public List<String> consultaPruebas() {
+        String query = "SELECT nombre_prueba FROM pruebas";
+        List<String> pruebas = new ArrayList<>();
         
         try (Connection conn = this.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
             
+            // Procesar los resultados de la consulta
             while (rs.next()) {
-                Prueba prueba = new Prueba(
-                    rs.getInt("id"),
-                    rs.getString("nombre_prueba"),
-                    Tipo.valueOf(rs.getString("tipo")),
-                    rs.getString("unidad_medida"),
-                    Modalidad.valueOf(rs.getString("modalidad")),
-                    rs.getString("lugar"),
-                    rs.getString("descripcion")
-                );
-                pruebas.add(prueba);
+                String nombrePrueba = rs.getString("nombre_prueba");
+                pruebas.add(nombrePrueba); // Añadir cada prueba a la lista
             }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        return pruebas;
+
+        return pruebas; // Retornar la lista con los resultados
     }
+
 
     // Método para actualizar una prueba
     public boolean actualizaPrueba(Prueba prueba) {
@@ -117,18 +112,18 @@ public class JdbcDaoPrueba extends JdbcDao {
     }
 
     // Método para obtener una prueba por ID
-    public Prueba getPruebaById(int id) {
-        String query = "SELECT * FROM pruebas WHERE id = ?";
+ // Método para obtener una prueba por nombre
+    public Prueba getPruebaByNombre(String nombrePrueba) {
+        String query = "SELECT * FROM pruebas WHERE nombre_prueba = ?";
         Prueba prueba = null;
-        
+
         try (Connection conn = this.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-            
-            pstmt.setInt(1, id);
+
+            pstmt.setString(1, nombrePrueba);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     prueba = new Prueba(
-                        rs.getInt("id"),
                         rs.getString("nombre_prueba"),
                         Tipo.valueOf(rs.getString("tipo")),
                         rs.getString("unidad_medida"),
@@ -141,7 +136,8 @@ public class JdbcDaoPrueba extends JdbcDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return prueba;
     }
+
 }

@@ -11,7 +11,7 @@ public class Prueba {
 	private String lugar;
 	private String descripcion;
 	
-	public Prueba(int id, String nombre_prueba, Tipo tipo, String unidad_medida, Modalidad modalidad, String lugar,
+	public Prueba(String nombre_prueba, Tipo tipo, String unidad_medida, Modalidad modalidad, String lugar,
 			String descripcion) {
 		super();
 		this.id = id;
