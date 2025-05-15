@@ -52,10 +52,10 @@ public class JdbcDaoPrueba extends JdbcDao {
     
     public boolean actualizaPrueba(Prueba prueba) {
         String query = "UPDATE pruebas SET nombre_prueba = ?, tipo = ?, unidad_medida = ?, " +
-                "modalidad = ?, lugar = ?, descripcion = ? WHERE id = ?";
+                       "modalidad = ?, lugar = ?, descripcion = ? WHERE nombre_prueba = ?";
         
         try (Connection conn = this.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
             
             pstmt.setString(1, prueba.getNombre_prueba());
             pstmt.setString(2, prueba.getTipo().name());
@@ -63,6 +63,7 @@ public class JdbcDaoPrueba extends JdbcDao {
             pstmt.setString(4, prueba.getModalidad().name());
             pstmt.setString(5, prueba.getLugar());
             pstmt.setString(6, prueba.getDescripcion());
+            pstmt.setInt(7, prueba.getId()); // Asegúrate de que el ID se esté estableciendo correctamente
             
             int affectedRows = pstmt.executeUpdate();
             
@@ -80,6 +81,7 @@ public class JdbcDaoPrueba extends JdbcDao {
             return false;
         }
     }
+
 
     // Método para eliminar una prueba
     public boolean eliminaPrueba(int idPrueba) {
@@ -130,9 +132,18 @@ public class JdbcDaoPrueba extends JdbcDao {
             pstmt.setString(1, nombrePrueba);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
+                    String tipoStr = rs.getString("tipo");
+                    Tipo tipoEnum = null;
+                    try {
+                        tipoEnum = Tipo.valueOf(tipoStr);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Tipo no válido: " + tipoStr);
+                        // Manejo adicional si es necesario
+                    }
+
                     prueba = new Prueba(
                         rs.getString("nombre_prueba"),
-                        Tipo.valueOf(rs.getString("tipo")),
+                        tipoEnum,
                         rs.getString("unidad_medida"),
                         Modalidad.valueOf(rs.getString("modalidad")),
                         rs.getString("lugar"),
@@ -146,5 +157,6 @@ public class JdbcDaoPrueba extends JdbcDao {
 
         return prueba;
     }
+
 
 }

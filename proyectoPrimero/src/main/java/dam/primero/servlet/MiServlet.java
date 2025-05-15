@@ -276,21 +276,27 @@ public class MiServlet extends HttpServlet {
 		        String lugar = request.getParameter("lugar");
 		        String descripcion = request.getParameter("descripcion");
 		        
-		        Tipo tipoEnum = Tipo.valueOf(tipo);
-		        Modalidad modalidadEnum = Modalidad.valueOf(modalidad);
+		        Tipo tipoEnum = Tipo.valueOf(tipo.toUpperCase());
+		        Modalidad modalidadEnum = Modalidad.valueOf(modalidad.toUpperCase());
 		        
 		        // Crear un objeto Prueba con los nuevos datos
 		        Prueba prueba = new Prueba(nombre, tipoEnum, unidad, modalidadEnum, lugar, descripcion);
 		        prueba.setId(dao.getPruebaByNombre(nombrePrueba).getId()); // Establecer el ID de la prueba a modificar
 		        
 		        // Actualizar la prueba en la base de datos
-		        dao.actualizaPrueba(prueba);
+		        boolean resultado = dao.actualizaPrueba(prueba);
 		        
-		        response.sendRedirect("/pruebas"); // Redirigir a la lista de pruebas
+		        if (resultado) {
+		            response.sendRedirect("/pruebas"); // Redirigir a la lista de pruebas
+		        } else {
+		            // Manejo de error si la actualización falla
+		            System.out.println("Error al actualizar la prueba.");
+		        }
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		    }
 		    break;
+
 
 	
 		default:
