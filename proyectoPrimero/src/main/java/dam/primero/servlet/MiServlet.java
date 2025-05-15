@@ -13,7 +13,9 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
+import dam.primero.dao.JdbcDaoPrueba;
 import dam.primero.dao.UsuarioDao;
+import dam.primero.modelos.Prueba;
 import dam.primero.modelos.Usuario;
 
 public class MiServlet extends HttpServlet {
@@ -48,7 +50,9 @@ public class MiServlet extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		// Datos de ejemplo: lista de nombres
 
-		String pathInfo = request.getPathInfo(); // Ejemplo: /listarUsuarios o null
+		String pathInfo = request.getServletPath();// Ejemplo: /listarUsuarios o null
+		
+		System.out.println("En get:"+pathInfo);
 		
 		if (pathInfo == null || pathInfo.trim().isEmpty() || pathInfo.trim().equalsIgnoreCase("/principal")) {
 			// Redirigir a la página de login
@@ -68,6 +72,17 @@ public class MiServlet extends HttpServlet {
 		    	//List<Prueba> pruebas = daoPrueba.consultaPruebas();
                 context.setVariable("pruebas", parametro1);
                 templateEngine.process("pruebas", context, response.getWriter());
+                break;
+		    case "aniadir":
+		    	 // Cargar tipos y modalidades
+		        List<String> tipos = this.getTiposPruebas(request, response, context);
+		        context.setVariable("tipos", tipos);
+
+		        List<String> modalidades = this.getListaModalidades(request, response, context);
+		        context.setVariable("modalidades", modalidades);
+
+		        // Renderizamos la vista
+		        templateEngine.process("aniadir", context, response.getWriter());
                 break;
 	            
 			case "listarUsuarios":
@@ -127,6 +142,33 @@ public class MiServlet extends HttpServlet {
 		return usuarios;
 	}
 	
+	private List<String> getTiposPruebas(HttpServletRequest request, HttpServletResponse response, WebContext context)
+	        throws ServletException, IOException {
+	    List<String> tipos = new ArrayList<>();
+	    try {
+	        tipos.add("resistencia");
+	        tipos.add("fuerza");
+	        tipos.add("velocidad");
+	        tipos.add("flexibilidad");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return tipos;
+	}
+
+	private List<String> getListaModalidades(HttpServletRequest request, HttpServletResponse response, WebContext context)
+	        throws ServletException, IOException {
+	    List<String> modalidades = new ArrayList<>();
+	    try {
+	        modalidades.add("grupo");
+	        modalidades.add("individual");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return modalidades;
+	}
+
+	
 	private Usuario getDetalleUsuario(String nombre)
 	{
 		Usuario u= null;
@@ -142,6 +184,8 @@ public class MiServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		
 		String path = request.getServletPath();
 		String pathInfo = request.getPathInfo(); // Ejemplo: /listarUsuarios o null
 		System.out.println(pathInfo);
@@ -152,7 +196,7 @@ public class MiServlet extends HttpServlet {
 
 		switch (pathInfo) {
 		
-		case "aniadir":
+		case "/altaPrueba":
 	        // Cargar tipos y modalidades para los selects
 	        context.setVariable("tipos", Arrays.asList("resistencia", "fuerza", "velocidad", "flexibilidad"));
 	        context.setVariable("modalidades", Arrays.asList("grupo", "individual"));

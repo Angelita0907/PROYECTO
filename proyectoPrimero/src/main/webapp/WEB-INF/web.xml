@@ -5,14 +5,17 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>MiServlet</servlet-name>
+        <servlet-name>miServlet</servlet-name>
         <servlet-class>dam.primero.servlet.MiServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>MiServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-name>miServlet</servlet-name>
+        <url-pattern>/principal</url-pattern>
+        <url-pattern>/pruebas</url-pattern>
+        <url-pattern>/aniadir</url-pattern>
+        <url-pattern>/altaPrueba</url-pattern>
     </servlet-mapping>
 
 </web-app>

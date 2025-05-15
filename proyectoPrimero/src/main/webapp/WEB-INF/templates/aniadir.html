@@ -27,7 +27,8 @@
         <h1>Añadir Prueba</h1>
         
         <!-- Formulario con Thymeleaf -->
-        <form th:action="@{/pruebas/guardar}" th:object="${prueba}" method="post">
+        <form method="POST" action="/altaPrueba">
+        <input type="hidden" name="accion" value="altaPrueba" />
             <div class="campos-formulario">
                 <div class="campo">
                     <label for="nombre">Nombre de prueba</label>
@@ -53,12 +54,12 @@
                 <div class="campo">
                     <label for="modalidad">Modalidad</label>
                     <select id="modalidad" th:field="*{modalidad}" required>
-                        <option value="">Seleccione modalidad</option>
-                        <option th:each="mod : ${modalidades}" 
-                                th:value="${mod}" 
-                                th:text="${mod}">
-                        </option>
-                    </select>
+    					<option value="">Seleccione modalidad</option>
+   					 	<option th:each="modalidad : ${modalidades}" 
+            					th:value="${modalidad}" 
+            					th:text="${modalidad}">
+    					</option>
+					</select>
                 </div>
                 
                 <div class="campo">
