@@ -23,17 +23,18 @@
     <div id="contenido-busqueda">
         <h1>Buscar Prueba a Modificar</h1>
         
-        <form method="POST" action="#" th:action="@{/modificar}" th:object="${pruebaSeleccionada}">
-            <div class="busqueda">
-                <label for="prueba">Seleccionar Prueba</label>
-                <select id="prueba" name="prueba" required>
-                    <option value="">Seleccione una prueba</option>
-                    <!-- Llenamos las opciones con las pruebas que tenemos en la base de datos -->
-                    <option th:each="prueba : ${pruebas}" th:value="${prueba}" th:text="${prueba}"></option>
-                </select>
-                <button id="boton-buscar" type="submit">Modificar</button>
-            </div>
-        </form>
+        <form method="POST" action="#" th:action="@{/modificarPrueba}" th:object="${pruebaSeleccionada}">
+    <div class="busqueda">
+        <label for="prueba">Seleccionar Prueba</label>
+        <select id="prueba" name="nombrePrueba" required>
+            <option value="">Seleccione una prueba</option>
+            <option th:each="prueba : ${pruebas}" 
+                    th:value="${prueba}" 
+                    th:text="${prueba}"></option>
+        </select>
+        <button id="boton-buscar" type="submit">Modificar</button>
+    </div>
+</form>
     </div>
 </body>
 </html>

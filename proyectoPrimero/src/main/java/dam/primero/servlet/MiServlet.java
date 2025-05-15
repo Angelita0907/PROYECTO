@@ -98,41 +98,22 @@ public class MiServlet extends HttpServlet {
 		        break;
                 
 		    case "modificar":
-		        String nombrePrueba = request.getParameter("prueba"); // se llama "prueba" en el select
-		        Prueba prueba = obtenerPruebaPorId(nombrePrueba);
-		        
-		        if (prueba != null) {
-		            context.setVariable("prueba", prueba);
+		        // Cargar la lista de pruebas
+		        List<String> pruebas = getListaPruebas(request, response, context);
+		        context.setVariable("pruebas", pruebas); // Pasa la lista de pruebas al contexto
 
-		            // Listas de enums para los selects
-		            List<String> tipos2 = Arrays.asList("RESISTENCIA", "FUERZA", "VELOCIDAD", "FLEXIBILIDAD");
-		            List<String> modalidades2 = Arrays.asList("GRUPO", "INDIVIDUAL");
-		            context.setVariable("tipos", tipos2);
-		            context.setVariable("modalidades", modalidades2);
+		        // Cargar listas de tipos y modalidades
+		        List<String> tipos2 = Arrays.asList("RESISTENCIA", "FUERZA", "VELOCIDAD", "FLEXIBILIDAD");
+		        context.setVariable("tipos", tipos2);
 
-		            templateEngine.process("modificar", context, response.getWriter());
-		        } else {
-		            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Prueba no encontrada");
-		        }
+		        List<String> modalidades2 = Arrays.asList("GRUPO", "INDIVIDUAL");
+		        context.setVariable("modalidades", modalidades2);
+
+		        templateEngine.process("modificar", context, response.getWriter());
 		        break;
-	            
-			case "listarUsuarios":
-				List<Usuario> usuarios = this.getListaUsuarios(request, response, context);
-				// Guardamos los usuarios para que lo tenga el frontend
-				context.setVariable("usuarios", usuarios);
-				// Redirigimos a listaUsuarios.html
-				templateEngine.process("listaUsuarios", context, response.getWriter());
-				break;
-				
-			case "detalleUsuario":
-		        Usuario usuario = this.getDetalleUsuario(parametro1);
-		        context.setVariable("usuario", usuario);
-		        templateEngine.process("detalleUsuario", context, response.getWriter());
-		        break;
-		        
-			case "index":
-				templateEngine.process("index", context, response.getWriter());
-				break;
+
+		     
+
 				
 			default:
 				// Ruta no reconocida
@@ -157,6 +138,19 @@ public class MiServlet extends HttpServlet {
 		}
 		return correcto;
 	}
+	
+	   private Prueba obtenerPruebaPorNombre(String nombre) {
+	       Prueba prueba = null;
+	       try {
+	           JdbcDaoPrueba daoPrueba = new JdbcDaoPrueba();
+	           prueba = daoPrueba.getPruebaByNombre(nombre); // Usar el método existente
+	       } catch (Exception e) {
+	           e.printStackTrace();
+	       }
+	       return prueba;
+	   }
+	   
+
 
 	private List<Usuario> getListaUsuarios(HttpServletRequest request, HttpServletResponse response, WebContext context)
 			throws ServletException, IOException {
@@ -211,16 +205,7 @@ public class MiServlet extends HttpServlet {
         return pruebas;
     }
 
-    private Prueba obtenerPruebaPorId(String nombre) {
-        Prueba prueba = null;
-        try {
-            JdbcDaoPrueba daoPrueba = new JdbcDaoPrueba();
-            prueba = daoPrueba.getPruebaByNombre(nombre);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return prueba;
-    }
+
 	
 	private Usuario getDetalleUsuario(String nombre)
 	{
@@ -279,46 +264,35 @@ public class MiServlet extends HttpServlet {
 	        
 	        break;
 		
-		case "/modificar":
-		    String nombre = request.getParameter("nombre");
-		    String tipo = request.getParameter("tipo");
-		    String unidad = request.getParameter("unidad");
-		    String modalidad = request.getParameter("modalidad");
-		    String lugar = request.getParameter("lugar");
-		    String descripcion = request.getParameter("descripcion");
-
-		    Prueba pruebaModificada = new Prueba(
-		        nombre,
-		        Tipo.valueOf(tipo.toUpperCase()),
-		        unidad,
-		        Modalidad.valueOf(modalidad.toUpperCase()),
-		        lugar,
-		        descripcion
-		    );
-
+		case "/modificarPrueba":
 		    try {
 		        JdbcDaoPrueba dao = new JdbcDaoPrueba();
-		        dao.actualizaPrueba(pruebaModificada);
+		        
+		        String nombrePrueba = request.getParameter("nombrePrueba"); // Obtener el nombre de la prueba seleccionada
+		        String nombre = request.getParameter("nombre");
+		        String tipo = request.getParameter("tipo");
+		        String unidad = request.getParameter("unidad");
+		        String modalidad = request.getParameter("modalidad");
+		        String lugar = request.getParameter("lugar");
+		        String descripcion = request.getParameter("descripcion");
+		        
+		        Tipo tipoEnum = Tipo.valueOf(tipo);
+		        Modalidad modalidadEnum = Modalidad.valueOf(modalidad);
+		        
+		        // Crear un objeto Prueba con los nuevos datos
+		        Prueba prueba = new Prueba(nombre, tipoEnum, unidad, modalidadEnum, lugar, descripcion);
+		        prueba.setId(dao.getPruebaByNombre(nombrePrueba).getId()); // Establecer el ID de la prueba a modificar
+		        
+		        // Actualizar la prueba en la base de datos
+		        dao.actualizaPrueba(prueba);
+		        
+		        response.sendRedirect("/pruebas"); // Redirigir a la lista de pruebas
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		    }
-
-		    response.sendRedirect("busqueda");
 		    break;
 
-	        
-		case "/validaUsuario":
-			// Lógica para listar usuarios
-			boolean correcto = validaUsuarioYClave(request, response, context);
-			if (correcto) {
-				context.setVariable("error", false);
-				templateEngine.process("index", context, response.getWriter());
-			} else {
-				context.setVariable("error", true);
-				templateEngine.process("login", context, response.getWriter());
-
-			}
-			break;
+	
 		default:
 			// Ruta no reconocida
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Ruta no válida: " + servletPath);

@@ -49,6 +49,37 @@ public class JdbcDaoPrueba extends JdbcDao {
             return false;
         }
     }
+    
+    public boolean actualizaPrueba(Prueba prueba) {
+        String query = "UPDATE pruebas SET nombre_prueba = ?, tipo = ?, unidad_medida = ?, " +
+                "modalidad = ?, lugar = ?, descripcion = ? WHERE id = ?";
+        
+        try (Connection conn = this.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            
+            pstmt.setString(1, prueba.getNombre_prueba());
+            pstmt.setString(2, prueba.getTipo().name());
+            pstmt.setString(3, prueba.getUnidad_medida());
+            pstmt.setString(4, prueba.getModalidad().name());
+            pstmt.setString(5, prueba.getLugar());
+            pstmt.setString(6, prueba.getDescripcion());
+            
+            int affectedRows = pstmt.executeUpdate();
+            
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        prueba.setId(generatedKeys.getInt(1));
+                    }
+                }
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     // Método para eliminar una prueba
     public boolean eliminaPrueba(int idPrueba) {
@@ -85,30 +116,6 @@ public class JdbcDaoPrueba extends JdbcDao {
         }
 
         return pruebas; // Retornar la lista con los resultados
-    }
-
-
-    // Método para actualizar una prueba
-    public boolean actualizaPrueba(Prueba prueba) {
-        String query = "UPDATE pruebas SET nombre_prueba = ?, tipo = ?, unidad_medida = ?, " +
-                      "modalidad = ?, lugar = ?, descripcion = ? WHERE id = ?";
-        
-        try (Connection conn = this.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-            
-            pstmt.setString(1, prueba.getNombre_prueba());
-            pstmt.setString(2, prueba.getTipo().name());
-            pstmt.setString(3, prueba.getUnidad_medida());
-            pstmt.setString(4, prueba.getModalidad().name());
-            pstmt.setString(5, prueba.getLugar());
-            pstmt.setString(6, prueba.getDescripcion());
-            pstmt.setInt(7, prueba.getId());
-            
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     // Método para obtener una prueba por ID
